@@ -104,6 +104,15 @@ export const lensTypes: LensType[] = [
   },
 ];
 
+export function calculateTotal(
+  shape: FrameShape,
+  lens: LensType,
+  options: LensOption[]
+): number {
+  const optionsTotal = options.reduce((sum, option) => sum + option.price, 0);
+  return frameBasePrice + shape.priceModifier + lens.price + optionsTotal;
+}
+
 export const lensOptions: LensOption[] = [
   {
     id: "anti-reflex",

@@ -2,7 +2,7 @@ import Link from "next/link";
 import GlassesPreview from "./GlassesPreview";
 import BuyButton from "@/components/BuyButton";
 import type { FrameColor, FrameShape, LensOption, LensType } from "@/lib/configurator-data";
-import { frameBasePrice } from "@/lib/configurator-data";
+import { calculateTotal, frameBasePrice } from "@/lib/configurator-data";
 
 interface SummaryProps {
   shape: FrameShape;
@@ -12,8 +12,7 @@ interface SummaryProps {
 }
 
 export default function Summary({ shape, color, lens, options }: SummaryProps) {
-  const optionsTotal = options.reduce((sum, option) => sum + option.price, 0);
-  const total = frameBasePrice + shape.priceModifier + lens.price + optionsTotal;
+  const total = calculateTotal(shape, lens, options);
 
   return (
     <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200">

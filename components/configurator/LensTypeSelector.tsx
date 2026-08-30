@@ -16,10 +16,10 @@ export default function LensTypeSelector({ selectedId, onSelect }: LensTypeSelec
             type="button"
             onClick={() => onSelect(lens.id)}
             aria-pressed={isSelected}
-            className={`flex items-start gap-3 rounded-xl border-2 p-4 text-left transition-colors ${
+            className={`flex touch-manipulation items-start gap-3 rounded-xl border-2 p-4 text-left transition-colors active:scale-[0.98] ${
               isSelected
                 ? "border-brand-700 bg-brand-50"
-                : "border-gray-200 bg-white hover:border-gray-300"
+                : "border-gray-200 bg-white active:border-gray-300 sm:hover:border-gray-300"
             }`}
           >
             <span
