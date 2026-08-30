@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import HomeConsultationFAQ from "@/components/HomeConsultationFAQ";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -118,6 +119,8 @@ export default function ContactPage() {
               </form>
             </div>
           </div>
+
+          <HomeConsultationFAQ />
         </div>
       </div>
     </div>
