@@ -3,9 +3,9 @@ import Link from "next/link";
 const footerLinks = {
   produse: [
     { href: "/produse", label: "Toate Produsele" },
-    { href: "/produse?cat=rame", label: "Rame Optice" },
-    { href: "/produse?cat=soare", label: "Ochelari de Soare" },
-    { href: "/produse?cat=lentile", label: "Lentile de Contact" },
+    { href: "/rame", label: "Rame Optice" },
+    { href: "/rame", label: "Ochelari de Soare" },
+    { href: "/lentile", label: "Lentile de Contact" },
   ],
   companie: [
     { href: "/despre", label: "Despre Noi" },
@@ -49,7 +49,7 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-900">Produse</h3>
             <ul className="mt-4 space-y-2">
               {footerLinks.produse.map((link) => (
-                <li key={link.href}>
+                <li key={link.label}>
                   <Link
                     href={link.href}
                     className="text-sm text-gray-600 hover:text-brand-700"
