@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import CoverageMapSection from "@/components/CoverageMapSection";
 import HomeAppointmentBooking from "@/components/HomeAppointmentBooking";
 import HomeConsultationFAQ from "@/components/HomeConsultationFAQ";
 
@@ -123,6 +124,8 @@ export default function ContactPage() {
               </form>
             </div>
           </div>
+
+          <CoverageMapSection />
 
           <section className="mt-16 border-t border-gray-200 pt-12">
             <h2 className="text-2xl font-bold text-gray-900">
