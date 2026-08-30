@@ -1,23 +1,16 @@
-const testimonials = [
-  {
-    name: "Maria Ionescu",
-    role: "Client fidel",
-    text: "Servicii impecabile! Am găsit ramele perfecte cu ajutorul consultantului optic. Recomand cu drag.",
-    rating: 5,
-  },
-  {
-    name: "Alexandru Pop",
-    role: "Client",
-    text: "Cea mai bună optică din Cluj. Prețuri corecte, personal amabil și ochelarii gata în timp record.",
-    rating: 5,
-  },
-  {
-    name: "Elena Mureșan",
-    role: "Client",
-    text: "Am venit cu o rețetă complicată și au rezolvat totul profesional. Lentilele progresive sunt perfecte.",
-    rating: 5,
-  },
-];
+import Link from "next/link";
+import ReviewCard from "@/components/ReviewCard";
+import { reviews } from "@/lib/reviews-data";
+
+const featuredReviews = reviews
+  .filter((review) => review.status === "aprobata")
+  .sort((a, b) => {
+    if (!!b.photoEmoji !== !!a.photoEmoji) {
+      return b.photoEmoji ? 1 : -1;
+    }
+    return b.rating - a.rating;
+  })
+  .slice(0, 3);
 
 export default function Testimonials() {
   return (
@@ -28,25 +21,15 @@ export default function Testimonials() {
         </div>
 
         <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
-          {testimonials.map((t) => (
-            <div
-              key={t.name}
-              className="flex flex-col rounded-2xl bg-gray-50 p-6 ring-1 ring-gray-200"
-            >
-              <div className="flex gap-0.5">
-                {Array.from({ length: t.rating }).map((_, i) => (
-                  <span key={i} className="text-gold-400 text-lg">★</span>
-                ))}
-              </div>
-              <p className="mt-4 flex-1 text-base text-gray-700 italic">
-                &ldquo;{t.text}&rdquo;
-              </p>
-              <div className="mt-6 border-t border-gray-200 pt-4">
-                <p className="text-sm font-semibold text-gray-900">{t.name}</p>
-                <p className="text-xs text-gray-500">{t.role}</p>
-              </div>
-            </div>
+          {featuredReviews.map((review) => (
+            <ReviewCard key={review.id} review={review} />
           ))}
+        </div>
+
+        <div className="mt-10 text-center">
+          <Link href="/recenzii" className="btn-secondary">
+            Vezi Toate Recenziile
+          </Link>
         </div>
       </div>
     </section>

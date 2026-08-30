@@ -3,9 +3,11 @@
 import { useState } from "react";
 import OrdersTable from "@/components/admin/OrdersTable";
 import PrescriptionsTable from "@/components/admin/PrescriptionsTable";
+import ReviewsTable from "@/components/admin/ReviewsTable";
 import { orders, prescriptions } from "@/lib/admin-data";
+import { reviews } from "@/lib/reviews-data";
 
-type Tab = "comenzi" | "retete";
+type Tab = "comenzi" | "retete" | "recenzii";
 
 const pendingOrders = orders.filter(
   (order) => order.status === "in_asteptare" || order.status === "in_procesare"
@@ -16,11 +18,17 @@ const pendingPrescriptions = prescriptions.filter(
     prescription.status === "noua" || prescription.status === "in_verificare"
 ).length;
 
+const pendingReviews = reviews.filter(
+  (review) => review.status === "in_asteptare"
+).length;
+
 const stats = [
   { label: "Comenzi totale", value: orders.length },
   { label: "Comenzi în lucru", value: pendingOrders },
   { label: "Rețete totale", value: prescriptions.length },
   { label: "Rețete în așteptare", value: pendingPrescriptions },
+  { label: "Recenzii totale", value: reviews.length },
+  { label: "Recenzii în așteptare", value: pendingReviews },
 ];
 
 export default function AdminDashboard() {
@@ -28,7 +36,7 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         {stats.map((stat) => (
           <div
             key={stat.label}
@@ -64,11 +72,24 @@ export default function AdminDashboard() {
           >
             Rețete
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("recenzii")}
+            className={`border-b-2 px-1 pb-3 text-sm font-medium transition-colors ${
+              activeTab === "recenzii"
+                ? "border-brand-700 text-brand-700"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Recenzii
+          </button>
         </nav>
       </div>
 
       <div className="mt-6">
-        {activeTab === "comenzi" ? <OrdersTable /> : <PrescriptionsTable />}
+        {activeTab === "comenzi" && <OrdersTable />}
+        {activeTab === "retete" && <PrescriptionsTable />}
+        {activeTab === "recenzii" && <ReviewsTable />}
       </div>
     </div>
   );
