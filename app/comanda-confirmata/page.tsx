@@ -58,9 +58,14 @@ export default async function ComandaConfirmataPage({
             Un consultant Ochelari Cluj vă va contacta în curând pentru detalii legate de
             livrare sau ridicare din magazin.
           </p>
-          <Link href="/produse" className="btn-primary mt-8">
-            Înapoi la produse
-          </Link>
+          <div className="mt-8 flex justify-center gap-4">
+            <Link href="/produse" className="btn-primary">
+              Înapoi la produse
+            </Link>
+            <Link href="/urmarire-comanda" className="btn-secondary">
+              Urmărește comanda
+            </Link>
+          </div>
         </div>
       </div>
     </div>
