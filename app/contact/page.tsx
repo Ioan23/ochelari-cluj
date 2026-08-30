@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import HomeAppointmentBooking from "@/components/HomeAppointmentBooking";
 import HomeConsultationFAQ from "@/components/HomeConsultationFAQ";
 
 export const metadata: Metadata = {
@@ -122,6 +123,19 @@ export default function ContactPage() {
               </form>
             </div>
           </div>
+
+          <section className="mt-16 border-t border-gray-200 pt-12">
+            <h2 className="text-2xl font-bold text-gray-900">
+              Programează o Consultație la Domiciliu
+            </h2>
+            <p className="mt-2 text-base text-gray-600">
+              Completează formularul de mai jos, iar noi îți confirmăm
+              programarea prin SMS și email.
+            </p>
+            <div className="mt-8 max-w-2xl">
+              <HomeAppointmentBooking />
+            </div>
+          </section>
 
           <HomeConsultationFAQ />
         </div>

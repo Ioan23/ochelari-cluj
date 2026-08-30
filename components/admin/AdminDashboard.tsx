@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import AppointmentsTable from "@/components/admin/AppointmentsTable";
 import OrdersTable from "@/components/admin/OrdersTable";
 import PrescriptionsTable from "@/components/admin/PrescriptionsTable";
 import ReviewsTable from "@/components/admin/ReviewsTable";
-import { orders, prescriptions } from "@/lib/admin-data";
+import { appointments, orders, prescriptions } from "@/lib/admin-data";
 import { reviews } from "@/lib/reviews-data";
 
-type Tab = "comenzi" | "retete" | "recenzii";
+type Tab = "comenzi" | "retete" | "recenzii" | "programari";
 
 const pendingOrders = orders.filter(
   (order) => order.status === "in_asteptare" || order.status === "in_procesare"
@@ -22,6 +23,10 @@ const pendingReviews = reviews.filter(
   (review) => review.status === "in_asteptare"
 ).length;
 
+const pendingAppointments = appointments.filter(
+  (appointment) => appointment.status === "in_asteptare"
+).length;
+
 const stats = [
   { label: "Comenzi totale", value: orders.length },
   { label: "Comenzi în lucru", value: pendingOrders },
@@ -29,6 +34,8 @@ const stats = [
   { label: "Rețete în așteptare", value: pendingPrescriptions },
   { label: "Recenzii totale", value: reviews.length },
   { label: "Recenzii în așteptare", value: pendingReviews },
+  { label: "Programări totale", value: appointments.length },
+  { label: "Programări în așteptare", value: pendingAppointments },
 ];
 
 export default function AdminDashboard() {
@@ -83,6 +90,17 @@ export default function AdminDashboard() {
           >
             Recenzii
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("programari")}
+            className={`border-b-2 px-1 pb-3 text-sm font-medium transition-colors ${
+              activeTab === "programari"
+                ? "border-brand-700 text-brand-700"
+                : "border-transparent text-gray-500 hover:text-gray-700"
+            }`}
+          >
+            Programări
+          </button>
         </nav>
       </div>
 
@@ -90,6 +108,7 @@ export default function AdminDashboard() {
         {activeTab === "comenzi" && <OrdersTable />}
         {activeTab === "retete" && <PrescriptionsTable />}
         {activeTab === "recenzii" && <ReviewsTable />}
+        {activeTab === "programari" && <AppointmentsTable />}
       </div>
     </div>
   );

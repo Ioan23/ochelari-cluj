@@ -26,7 +26,7 @@ const faqs = [
   {
     question: "Cum programez o consultație la domiciliu?",
     answer:
-      "Ne puteți contacta telefonic la +40 264 123 456 sau prin formularul de contact, menționând că doriți o consultație la domiciliu. Vă vom propune o dată și un interval orar convenabile.",
+      "Completați formularul de programare de mai sus sau sunați-ne la +40 264 123 456. Veți primi imediat o confirmare prin SMS și email cu data și intervalul orar stabilite.",
   },
   {
     question: "Cât durează o vizită la domiciliu?",
