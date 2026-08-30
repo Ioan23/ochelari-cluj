@@ -1,10 +1,44 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useCart } from "@/lib/cart-context";
 
 export default function CosPage() {
-  const { items, updateQuantity, removeItem, clearCart, totalPrice } = useCart();
+  const {
+    items,
+    updateQuantity,
+    removeItem,
+    clearCart,
+    totalPrice,
+    appliedCoupon,
+    applyCoupon,
+    removeCoupon,
+    discount,
+    totalAfterDiscount,
+  } = useCart();
+  const [couponInput, setCouponInput] = useState("");
+  const [couponMessage, setCouponMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
+  const handleApplyCoupon = (event: React.FormEvent) => {
+    event.preventDefault();
+    const result = applyCoupon(couponInput);
+    setCouponMessage({
+      type: result.success ? "success" : "error",
+      text: result.message,
+    });
+    if (result.success) {
+      setCouponInput("");
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    removeCoupon();
+    setCouponMessage(null);
+  };
 
   if (items.length === 0) {
     return (
@@ -108,18 +142,69 @@ export default function CosPage() {
 
           <div className="h-fit rounded-xl border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-gray-900">Sumar comandă</h2>
+
+            <div className="mt-4">
+              {appliedCoupon ? (
+                <div className="flex items-center justify-between rounded-md bg-green-50 px-3 py-2 text-sm text-green-800">
+                  <span>
+                    Cod <strong>{appliedCoupon.code}</strong> aplicat
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleRemoveCoupon}
+                    className="font-medium text-green-700 underline hover:text-green-900"
+                  >
+                    Elimină
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleApplyCoupon} className="flex gap-2">
+                  <input
+                    type="text"
+                    value={couponInput}
+                    onChange={(event) => setCouponInput(event.target.value)}
+                    placeholder="Cod promoțional"
+                    className="min-w-0 flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                  />
+                  <button
+                    type="submit"
+                    className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    Aplică
+                  </button>
+                </form>
+              )}
+              {couponMessage && (
+                <p
+                  className={`mt-2 text-sm ${
+                    couponMessage.type === "success"
+                      ? "text-green-700"
+                      : "text-red-600"
+                  }`}
+                >
+                  {couponMessage.text}
+                </p>
+              )}
+            </div>
+
             <dl className="mt-4 space-y-2">
               <div className="flex justify-between text-sm text-gray-600">
                 <dt>Subtotal</dt>
                 <dd>{totalPrice.toLocaleString("ro-RO")} lei</dd>
               </div>
+              {discount > 0 && (
+                <div className="flex justify-between text-sm text-green-700">
+                  <dt>Reducere</dt>
+                  <dd>-{discount.toLocaleString("ro-RO")} lei</dd>
+                </div>
+              )}
               <div className="flex justify-between text-sm text-gray-600">
                 <dt>Livrare</dt>
                 <dd>Gratuită</dd>
               </div>
               <div className="flex justify-between border-t border-gray-200 pt-2 text-base font-semibold text-gray-900">
                 <dt>Total</dt>
-                <dd>{totalPrice.toLocaleString("ro-RO")} lei</dd>
+                <dd>{totalAfterDiscount.toLocaleString("ro-RO")} lei</dd>
               </div>
             </dl>
             <Link href="/contact" className="btn-primary mt-6 block text-center">

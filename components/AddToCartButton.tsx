@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useCart } from "@/lib/cart-context";
+import { products } from "@/lib/data";
 
 interface AddToCartButtonProps {
   productId: string;
@@ -27,7 +28,9 @@ export default function AddToCartButton({
       onClick={(event) => {
         event.preventDefault();
         event.stopPropagation();
-        addItem(productId);
+        const product = products.find((item) => item.id === productId);
+        if (!product) return;
+        addItem(product);
         setAdded(true);
         window.setTimeout(() => setAdded(false), 1500);
       }}
