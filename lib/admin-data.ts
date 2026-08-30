@@ -1,3 +1,5 @@
+import { distributeItemsEvenly, generateInvoice, type Invoice } from "./invoicing";
+
 export type OrderStatus =
   | "in_asteptare"
   | "in_procesare"
@@ -94,6 +96,20 @@ export const orders: Order[] = [
     status: "anulata",
   },
 ];
+
+export const invoices: Invoice[] = orders.map((order, index) =>
+  generateInvoice(
+    {
+      orderId: order.id,
+      customerName: order.customerName,
+      customerEmail: order.email,
+      issueDate: order.date,
+      items: distributeItemsEvenly(order.items, order.total),
+      status: order.status === "anulata" ? "stornata" : "emisa",
+    },
+    orders.length - index
+  )
+);
 
 export type PrescriptionStatus =
   | "noua"
