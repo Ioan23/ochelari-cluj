@@ -1,22 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
-
-const TIME_SLOTS = [
-  "09:00",
-  "10:00",
-  "11:00",
-  "12:00",
-  "14:00",
-  "15:00",
-  "16:00",
-  "17:00",
-];
 
 interface NotificationStatus {
   emailSent: boolean;
   smsSent: boolean;
+}
+
+function todayISODate() {
+  return new Date().toISOString().slice(0, 10);
 }
 
 export default function HomeAppointmentBooking() {
@@ -25,6 +18,41 @@ export default function HomeAppointmentBooking() {
   const [confirmation, setConfirmation] = useState<NotificationStatus | null>(
     null
   );
+
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [timeSlots, setTimeSlots] = useState<string[]>([]);
+  const [bookedTimes, setBookedTimes] = useState<string[]>([]);
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
+
+  useEffect(() => {
+    if (!date) {
+      setTimeSlots([]);
+      setBookedTimes([]);
+      return;
+    }
+
+    const controller = new AbortController();
+    setIsLoadingSlots(true);
+    setTime("");
+
+    fetch(`/api/appointments?date=${encodeURIComponent(date)}`, {
+      signal: controller.signal,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setTimeSlots(data.slots ?? []);
+        setBookedTimes(data.bookedTimes ?? []);
+      })
+      .catch((err) => {
+        if (err.name !== "AbortError") {
+          setError("Nu am putut încărca intervalele disponibile. Încearcă din nou.");
+        }
+      })
+      .finally(() => setIsLoadingSlots(false));
+
+    return () => controller.abort();
+  }, [date]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -36,8 +64,8 @@ export default function HomeAppointmentBooking() {
       email: formData.get("email"),
       phone: formData.get("phone"),
       address: formData.get("address"),
-      date: formData.get("date"),
-      time: formData.get("time"),
+      date,
+      time,
       notes: formData.get("notes"),
     };
 
@@ -56,6 +84,11 @@ export default function HomeAppointmentBooking() {
         setError(
           data?.error ?? "Nu am putut trimite programarea. Încearcă din nou."
         );
+        if (response.status === 409) {
+          // Someone else took the slot in the meantime — refresh availability.
+          setBookedTimes((prev) => (prev.includes(time) ? prev : [...prev, time]));
+          setTime("");
+        }
         return;
       }
 
@@ -99,7 +132,11 @@ export default function HomeAppointmentBooking() {
         </p>
         <button
           type="button"
-          onClick={() => setConfirmation(null)}
+          onClick={() => {
+            setConfirmation(null);
+            setDate("");
+            setTime("");
+          }}
           className="btn-secondary mt-8"
         >
           Fă o altă programare
@@ -191,6 +228,9 @@ export default function HomeAppointmentBooking() {
             id="apptDate"
             name="date"
             required
+            min={todayISODate()}
+            value={date}
+            onChange={(event) => setDate(event.target.value)}
             className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 shadow-sm focus:border-brand-700 focus:outline-none focus:ring-1 focus:ring-brand-700"
           />
         </div>
@@ -205,18 +245,29 @@ export default function HomeAppointmentBooking() {
             id="apptTime"
             name="time"
             required
-            defaultValue=""
-            className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 shadow-sm focus:border-brand-700 focus:outline-none focus:ring-1 focus:ring-brand-700"
+            value={time}
+            onChange={(event) => setTime(event.target.value)}
+            disabled={!date || isLoadingSlots}
+            className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 shadow-sm focus:border-brand-700 focus:outline-none focus:ring-1 focus:ring-brand-700 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-400"
           >
             <option value="" disabled>
-              Alege ora
+              {!date
+                ? "Alege mai întâi data"
+                : isLoadingSlots
+                  ? "Se încarcă intervalele..."
+                  : "Alege ora"}
             </option>
-            {TIME_SLOTS.map((slot) => (
-              <option key={slot} value={slot}>
-                {slot}
+            {timeSlots.map((slot) => (
+              <option key={slot} value={slot} disabled={bookedTimes.includes(slot)}>
+                {slot} {bookedTimes.includes(slot) ? "(indisponibil)" : ""}
               </option>
             ))}
           </select>
+          {date && !isLoadingSlots && timeSlots.length > 0 && timeSlots.every((slot) => bookedTimes.includes(slot)) && (
+            <p className="mt-1 text-xs text-red-600">
+              Nu mai sunt intervale disponibile pentru data selectată. Alege altă dată.
+            </p>
+          )}
         </div>
         <div className="sm:col-span-2">
           <label
