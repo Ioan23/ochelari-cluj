@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import CoverageMapSection from "@/components/CoverageMapSection";
 import HomeConsultationFAQ from "@/components/HomeConsultationFAQ";
 
 export const metadata: Metadata = {
@@ -119,6 +120,8 @@ export default function ContactPage() {
               </form>
             </div>
           </div>
+
+          <CoverageMapSection />
 
           <HomeConsultationFAQ />
         </div>
