@@ -1,177 +1,138 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { useCart } from "@/lib/cart-context";
-import { products } from "@/lib/data";
-
-function CanceledBanner() {
-  const searchParams = useSearchParams();
-  if (searchParams.get("canceled") !== "true") return null;
-
-  return (
-    <div className="mb-8 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800 ring-1 ring-amber-200">
-      Plata a fost anulată. Coșul tău a fost păstrat, poți relua oricând.
-    </div>
-  );
-}
 
 export default function CosPage() {
-  const { items, updateQuantity, removeItem, subtotal, itemCount } = useCart();
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const { items, updateQuantity, removeItem, clearCart, totalPrice } = useCart();
 
-  const cartLines = items
-    .map((item) => {
-      const product = products.find((p) => p.id === item.productId);
-      return product ? { product, quantity: item.quantity } : null;
-    })
-    .filter((line): line is { product: (typeof products)[number]; quantity: number } => line !== null);
-
-  async function handleCheckout() {
-    setCheckoutError(null);
-    setIsCheckingOut(true);
-    try {
-      const response = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items: items.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-          })),
-        }),
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error ?? "Plata nu a putut fi inițiată.");
-      }
-
-      window.location.href = data.url;
-    } catch (error) {
-      setCheckoutError(
-        error instanceof Error ? error.message : "A apărut o eroare neașteptată."
-      );
-      setIsCheckingOut(false);
-    }
+  if (items.length === 0) {
+    return (
+      <div className="bg-white">
+        <div className="container-padded py-24 text-center">
+          <h1 className="section-heading">Coșul tău este gol</h1>
+          <p className="mt-4 text-lg text-gray-600">
+            Adaugă produse din colecția noastră pentru a le vedea aici.
+          </p>
+          <Link href="/produse" className="btn-primary mt-8 inline-flex">
+            Vezi produsele
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="bg-white">
       <div className="container-padded py-16">
-        <h1 className="section-heading">Coșul Tău</h1>
+        <div className="mb-10 flex items-end justify-between">
+          <h1 className="section-heading">Coșul de Cumpărături</h1>
+          <button
+            type="button"
+            onClick={clearCart}
+            className="text-sm font-medium text-gray-500 hover:text-red-600"
+          >
+            Golește coșul
+          </button>
+        </div>
 
-        <Suspense fallback={null}>
-          <CanceledBanner />
-        </Suspense>
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
+          <ul className="divide-y divide-gray-200 rounded-xl border border-gray-200 lg:col-span-2">
+            {items.map((item) => (
+              <li key={item.id} className="flex items-center gap-4 p-4 sm:p-6">
+                <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-lg bg-gray-100 text-4xl">
+                  {item.emoji}
+                </div>
 
-        {cartLines.length === 0 ? (
-          <div className="mt-10 rounded-xl bg-gray-50 p-10 text-center">
-            <p className="text-gray-600">Coșul tău este momentan gol.</p>
-            <Link href="/produse" className="btn-primary mt-6 inline-block">
-              Vezi produsele
+                <div className="min-w-0 flex-1">
+                  <h2 className="truncate text-base font-semibold text-gray-900">
+                    {item.name}
+                  </h2>
+                  {item.brand && (
+                    <p className="text-sm text-gray-500">{item.brand}</p>
+                  )}
+                  <p className="mt-1 text-sm font-medium text-gray-900">
+                    {item.price.toLocaleString("ro-RO")} lei
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    aria-label="Scade cantitatea"
+                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    className="flex h-8 w-8 items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-gray-50"
+                  >
+                    −
+                  </button>
+                  <span className="w-6 text-center text-sm font-medium">
+                    {item.quantity}
+                  </span>
+                  <button
+                    type="button"
+                    aria-label="Crește cantitatea"
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    className="flex h-8 w-8 items-center justify-center rounded-md border border-gray-300 text-gray-600 hover:bg-gray-50"
+                  >
+                    +
+                  </button>
+                </div>
+
+                <div className="w-24 flex-shrink-0 text-right text-sm font-semibold text-gray-900">
+                  {(item.price * item.quantity).toLocaleString("ro-RO")} lei
+                </div>
+
+                <button
+                  type="button"
+                  aria-label="Elimină produsul"
+                  onClick={() => removeItem(item.id)}
+                  className="flex-shrink-0 rounded-md p-2 text-gray-400 hover:bg-gray-50 hover:text-red-600"
+                >
+                  <svg
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          <div className="h-fit rounded-xl border border-gray-200 p-6">
+            <h2 className="text-lg font-semibold text-gray-900">Sumar comandă</h2>
+            <dl className="mt-4 space-y-2">
+              <div className="flex justify-between text-sm text-gray-600">
+                <dt>Subtotal</dt>
+                <dd>{totalPrice.toLocaleString("ro-RO")} lei</dd>
+              </div>
+              <div className="flex justify-between text-sm text-gray-600">
+                <dt>Livrare</dt>
+                <dd>Gratuită</dd>
+              </div>
+              <div className="flex justify-between border-t border-gray-200 pt-2 text-base font-semibold text-gray-900">
+                <dt>Total</dt>
+                <dd>{totalPrice.toLocaleString("ro-RO")} lei</dd>
+              </div>
+            </dl>
+            <Link href="/contact" className="btn-primary mt-6 block text-center">
+              Finalizează comanda
+            </Link>
+            <Link
+              href="/produse"
+              className="mt-3 block text-center text-sm font-medium text-brand-700 hover:text-brand-800"
+            >
+              Continuă cumpărăturile
             </Link>
           </div>
-        ) : (
-          <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-3">
-            <div className="lg:col-span-2">
-              <ul className="divide-y divide-gray-200 rounded-xl ring-1 ring-gray-200">
-                {cartLines.map(({ product, quantity }) => (
-                  <li
-                    key={product.id}
-                    className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-gray-100 text-3xl">
-                        {product.emoji}
-                      </div>
-                      <div>
-                        <p className="font-semibold text-gray-900">
-                          {product.name}
-                        </p>
-                        {product.brand && (
-                          <p className="text-sm text-gray-500">{product.brand}</p>
-                        )}
-                        <p className="mt-1 text-sm text-gray-600">
-                          {product.price.toLocaleString("ro-RO")} lei
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center rounded-lg ring-1 ring-gray-300">
-                        <button
-                          type="button"
-                          className="px-3 py-1.5 text-gray-600 hover:bg-gray-50"
-                          onClick={() => updateQuantity(product.id, quantity - 1)}
-                          aria-label="Scade cantitatea"
-                        >
-                          −
-                        </button>
-                        <span className="w-8 text-center text-sm font-medium">
-                          {quantity}
-                        </span>
-                        <button
-                          type="button"
-                          className="px-3 py-1.5 text-gray-600 hover:bg-gray-50"
-                          onClick={() => updateQuantity(product.id, quantity + 1)}
-                          aria-label="Crește cantitatea"
-                        >
-                          +
-                        </button>
-                      </div>
-                      <button
-                        type="button"
-                        className="text-sm font-medium text-gray-500 hover:text-red-600"
-                        onClick={() => removeItem(product.id)}
-                      >
-                        Elimină
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="h-fit rounded-xl bg-gray-50 p-6 ring-1 ring-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Sumar</h2>
-              <dl className="mt-4 space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <dt className="text-gray-600">
-                    Produse ({itemCount})
-                  </dt>
-                  <dd className="font-medium text-gray-900">
-                    {subtotal.toLocaleString("ro-RO")} lei
-                  </dd>
-                </div>
-              </dl>
-              <div className="mt-4 flex justify-between border-t border-gray-200 pt-4">
-                <span className="font-semibold text-gray-900">Total</span>
-                <span className="font-bold text-gray-900">
-                  {subtotal.toLocaleString("ro-RO")} lei
-                </span>
-              </div>
-
-              {checkoutError && (
-                <p className="mt-4 text-sm text-red-600">{checkoutError}</p>
-              )}
-
-              <button
-                type="button"
-                onClick={handleCheckout}
-                disabled={isCheckingOut}
-                className="btn-primary mt-6 w-full disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {isCheckingOut ? "Se procesează..." : "Continuă spre plată"}
-              </button>
-              <p className="mt-3 text-center text-xs text-gray-500">
-                Plata se procesează securizat prin Stripe.
-              </p>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );

@@ -1,51 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getStripeClient } from "@/lib/stripe";
+import type Stripe from "stripe";
+import { stripe } from "@/lib/stripe";
 import { products } from "@/lib/data";
 
-interface CheckoutRequestItem {
-  productId: string;
-  quantity: number;
-}
-
 export async function POST(request: NextRequest) {
-  let body: { items?: CheckoutRequestItem[] };
-  try {
-    body = await request.json();
-  } catch {
+  if (!stripe) {
     return NextResponse.json(
-      { error: "Corpul cererii trebuie să fie JSON valid." },
-      { status: 400 }
+      {
+        error:
+          "Plata online nu este configurată momentan. Contactați-ne pentru a finaliza comanda.",
+      },
+      { status: 503 }
     );
   }
 
-  const requestedItems = Array.isArray(body.items) ? body.items : [];
-  if (requestedItems.length === 0) {
-    return NextResponse.json(
-      { error: "Coșul este gol." },
-      { status: 400 }
-    );
+  const body = await request.json().catch(() => null);
+  if (!body || typeof body !== "object") {
+    return NextResponse.json({ error: "Cerere invalidă." }, { status: 400 });
   }
 
-  const lineItems = [];
-  for (const requested of requestedItems) {
-    const quantity = Number(requested?.quantity);
-    if (!requested?.productId || !Number.isInteger(quantity) || quantity <= 0) {
-      return NextResponse.json(
-        { error: "Articol de coș invalid." },
-        { status: 400 }
-      );
-    }
+  let lineItem: Stripe.Checkout.SessionCreateParams.LineItem;
 
-    const product = products.find((p) => p.id === requested.productId);
+  if (body.type === "product") {
+    const product = products.find((item) => item.id === body.productId);
     if (!product || !product.inStock) {
-      return NextResponse.json(
-        { error: `Produsul "${requested.productId}" nu este disponibil.` },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Produs indisponibil." }, { status: 400 });
     }
-
-    lineItems.push({
-      quantity,
+    lineItem = {
+      quantity: 1,
       price_data: {
         currency: "ron",
         unit_amount: Math.round(product.price * 100),
@@ -54,33 +36,48 @@ export async function POST(request: NextRequest) {
           description: product.description,
         },
       },
-    });
+    };
+  } else if (body.type === "custom") {
+    const amount = Number(body.amount);
+    const name =
+      typeof body.name === "string" && body.name.trim()
+        ? body.name.slice(0, 200)
+        : "Ochelari Personalizați";
+
+    if (!Number.isFinite(amount) || amount <= 0) {
+      return NextResponse.json({ error: "Sumă invalidă." }, { status: 400 });
+    }
+
+    lineItem = {
+      quantity: 1,
+      price_data: {
+        currency: "ron",
+        unit_amount: Math.round(amount * 100),
+        product_data: { name },
+      },
+    };
+  } else {
+    return NextResponse.json({ error: "Tip de comandă necunoscut." }, { status: 400 });
   }
 
-  const origin = request.headers.get("origin") ?? new URL(request.url).origin;
+  const origin = request.headers.get("origin") ?? request.nextUrl.origin;
 
   try {
-    const stripe = getStripeClient();
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      line_items: lineItems,
+      payment_method_types: ["card"],
+      line_items: [lineItem],
+      locale: "ro",
       success_url: `${origin}/comanda-confirmata?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/cos?canceled=true`,
-      shipping_address_collection: { allowed_countries: ["RO"] },
-      billing_address_collection: "required",
+      cancel_url: `${origin}/comanda-anulata`,
     });
-
-    if (!session.url) {
-      return NextResponse.json(
-        { error: "Sesiunea de plată nu a putut fi creată." },
-        { status: 502 }
-      );
-    }
 
     return NextResponse.json({ url: session.url });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Eroare necunoscută la Stripe.";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("Eroare la crearea sesiunii Stripe Checkout:", error);
+    return NextResponse.json(
+      { error: "Nu am putut iniția plata. Încercați din nou." },
+      { status: 502 }
+    );
   }
 }

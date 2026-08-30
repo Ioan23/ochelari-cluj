@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import CartLink from "@/components/CartLink";
+import { useCart } from "@/lib/cart-context";
 
 const navLinks = [
   { href: "/produse", label: "Produse" },
@@ -16,6 +16,7 @@ const navLinks = [
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { totalItems } = useCart();
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur-sm">
@@ -39,42 +40,42 @@ export default function Header() {
           </nav>
 
           <div className="hidden items-center gap-6 md:flex">
-            <CartLink />
+            <CartLink totalItems={totalItems} />
             <Link href="/contact" className="btn-primary text-sm">
               Programează Consultație
             </Link>
           </div>
 
           <div className="flex items-center gap-2 md:hidden">
-            <CartLink />
+            <CartLink totalItems={totalItems} />
             <button
               type="button"
               className="rounded-md p-2 text-gray-700 hover:bg-gray-100"
               onClick={() => setMobileOpen(!mobileOpen)}
               aria-label="Toggle menu"
             >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              {mobileOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                {mobileOpen ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
+              </svg>
             </button>
           </div>
         </div>
@@ -106,5 +107,34 @@ export default function Header() {
         )}
       </div>
     </header>
+  );
+}
+
+function CartLink({ totalItems }: { totalItems: number }) {
+  return (
+    <Link
+      href="/cos"
+      className="relative rounded-md p-2 text-gray-700 hover:bg-gray-100"
+      aria-label={`Coș de cumpărături${totalItems > 0 ? ` (${totalItems} produse)` : ""}`}
+    >
+      <svg
+        className="h-6 w-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M3 3h2l.4 2M7 13h10l3.6-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+        />
+      </svg>
+      {totalItems > 0 && (
+        <span className="absolute -right-1 -top-1 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-brand-700 px-1 text-xs font-semibold text-white">
+          {totalItems}
+        </span>
+      )}
+    </Link>
   );
 }
