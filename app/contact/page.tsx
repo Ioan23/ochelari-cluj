@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import CoverageMapSection from "@/components/CoverageMapSection";
+import HomeAppointmentBooking from "@/components/HomeAppointmentBooking";
 import HomeConsultationFAQ from "@/components/HomeConsultationFAQ";
 
 export const metadata: Metadata = {
-  title: "Contact",
+  title: "Contact | Consultații Optice în Cluj-Napoca",
   description:
-    "Contactați-ne pentru programări, informații despre produse sau orice altă întrebare.",
+    "Contactați optica noastră din Cluj-Napoca, Strada Eroilor 42, pentru programări, consultații optice gratuite (în magazin sau la domiciliu) sau orice altă întrebare.",
+  alternates: {
+    canonical: "/contact",
+  },
 };
 
 export default function ContactPage() {
@@ -122,6 +126,19 @@ export default function ContactPage() {
           </div>
 
           <CoverageMapSection />
+
+          <section className="mt-16 border-t border-gray-200 pt-12">
+            <h2 className="text-2xl font-bold text-gray-900">
+              Programează o Consultație la Domiciliu
+            </h2>
+            <p className="mt-2 text-base text-gray-600">
+              Completează formularul de mai jos, iar noi îți confirmăm
+              programarea prin SMS și email.
+            </p>
+            <div className="mt-8 max-w-2xl">
+              <HomeAppointmentBooking />
+            </div>
+          </section>
 
           <HomeConsultationFAQ />
         </div>

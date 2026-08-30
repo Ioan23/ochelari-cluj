@@ -127,6 +127,76 @@ export const prescriptionStatusStyles: Record<PrescriptionStatus, string> = {
   respinsa: "bg-red-100 text-red-800",
 };
 
+export type AppointmentStatus = "in_asteptare" | "confirmata" | "anulata";
+
+export interface Appointment {
+  id: string;
+  customerName: string;
+  email: string;
+  phone: string;
+  address: string;
+  date: string;
+  time: string;
+  notes?: string;
+  status: AppointmentStatus;
+  emailSent: boolean;
+  smsSent: boolean;
+}
+
+export const appointmentStatusLabels: Record<AppointmentStatus, string> = {
+  in_asteptare: "În așteptare",
+  confirmata: "Confirmată",
+  anulata: "Anulată",
+};
+
+export const appointmentStatusStyles: Record<AppointmentStatus, string> = {
+  in_asteptare: "bg-yellow-100 text-yellow-800",
+  confirmata: "bg-green-100 text-green-800",
+  anulata: "bg-red-100 text-red-800",
+};
+
+export const appointments: Appointment[] = [
+  {
+    id: "PRG-3021",
+    customerName: "Bianca Marin",
+    email: "bianca.marin@example.ro",
+    phone: "+40 741 223 344",
+    address: "Str. Memorandumului 12, Cluj-Napoca",
+    date: "2026-09-02",
+    time: "10:00",
+    notes: "Mamă cu doi copii mici, preferă dimineața.",
+    status: "confirmata",
+    emailSent: true,
+    smsSent: true,
+  },
+  {
+    id: "PRG-3020",
+    customerName: "Gheorghe Pop",
+    email: "gheorghe.pop@example.ro",
+    phone: "+40 752 998 112",
+    address: "Str. Fabricii 8, Florești",
+    date: "2026-09-03",
+    time: "14:30",
+    notes: "Mobilitate redusă, are nevoie de control complet.",
+    status: "in_asteptare",
+    emailSent: true,
+    smsSent: false,
+  },
+  {
+    id: "PRG-3019",
+    customerName: "Daniela Sălăgean",
+    email: "daniela.salagean@example.ro",
+    phone: "+40 733 445 667",
+    address: "Str. Aurel Vlaicu 25, Cluj-Napoca",
+    date: "2026-08-29",
+    time: "16:00",
+    notes: "",
+    status: "anulata",
+    emailSent: true,
+    smsSent: true,
+  },
+];
+
 export const prescriptions: Prescription[] = [
   {
     id: "RET-2031",
