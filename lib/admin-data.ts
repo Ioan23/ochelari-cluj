@@ -159,6 +159,17 @@ export interface Appointment {
   smsSent: boolean;
 }
 
+export const HOME_VISIT_TIME_SLOTS = [
+  "09:00",
+  "10:00",
+  "11:00",
+  "12:00",
+  "14:00",
+  "15:00",
+  "16:00",
+  "17:00",
+];
+
 export const appointmentStatusLabels: Record<AppointmentStatus, string> = {
   in_asteptare: "În așteptare",
   confirmata: "Confirmată",
@@ -212,6 +223,37 @@ export const appointments: Appointment[] = [
     smsSent: true,
   },
 ];
+
+export function getBookedTimesForDate(date: string): string[] {
+  return appointments
+    .filter((appointment) => appointment.date === date && appointment.status !== "anulata")
+    .map((appointment) => appointment.time);
+}
+
+export function isTimeSlotAvailable(date: string, time: string): boolean {
+  return !getBookedTimesForDate(date).includes(time);
+}
+
+export function createAppointment(input: {
+  customerName: string;
+  email: string;
+  phone: string;
+  address: string;
+  date: string;
+  time: string;
+  notes?: string;
+  emailSent: boolean;
+  smsSent: boolean;
+}): Appointment {
+  const appointment: Appointment = {
+    id: `PRG-${Date.now().toString().slice(-6)}`,
+    status: "in_asteptare",
+    ...input,
+  };
+
+  appointments.unshift(appointment);
+  return appointment;
+}
 
 export const prescriptions: Prescription[] = [
   {
