@@ -7,6 +7,7 @@ const navLinks = [
   { href: "/produse", label: "Produse" },
   { href: "/rame", label: "Rame" },
   { href: "/lentile", label: "Lentile" },
+  { href: "/configurator", label: "Configurator" },
   { href: "/despre", label: "Despre Noi" },
   { href: "/contact", label: "Contact" },
 ];
