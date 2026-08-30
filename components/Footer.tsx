@@ -10,6 +10,7 @@ const footerLinks = {
   companie: [
     { href: "/despre", label: "Despre Noi" },
     { href: "/contact", label: "Contact" },
+    { href: "/garantie-retur", label: "Garanție și Retur" },
   ],
 };
 
