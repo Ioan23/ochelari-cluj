@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ClinicPartners from "@/components/ClinicPartners";
+import TeamSection from "@/components/TeamSection";
 
 export const metadata: Metadata = {
   title: "Despre Noi | Optică în Cluj-Napoca din 2010",
@@ -85,6 +86,8 @@ export default function DesprePage() {
               </div>
             ))}
           </div>
+
+          <TeamSection />
 
           <ClinicPartners />
         </div>
