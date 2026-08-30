@@ -39,14 +39,14 @@ export default function Header() {
             ))}
           </nav>
 
-          <div className="hidden items-center gap-4 md:flex">
+          <div className="hidden items-center gap-6 md:flex">
             <CartLink totalItems={totalItems} />
             <Link href="/contact" className="btn-primary text-sm">
               Programează Consultație
             </Link>
           </div>
 
-          <div className="flex items-center gap-1 md:hidden">
+          <div className="flex items-center gap-2 md:hidden">
             <CartLink totalItems={totalItems} />
             <button
               type="button"
