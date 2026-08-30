@@ -1,11 +1,24 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 import type { Product } from "@/lib/data";
+import { useCart } from "@/lib/cart-context";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const { addItem } = useCart();
+  const [added, setAdded] = useState(false);
+
+  function handleAddToCart() {
+    addItem(product);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1500);
+  }
+
   return (
     <div className="group relative flex flex-col overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200 transition-all hover:shadow-md">
       <div className="aspect-square overflow-hidden bg-gray-100">
@@ -40,6 +53,15 @@ export default function ProductCard({ product }: ProductCardProps) {
             </span>
           )}
         </div>
+        {product.inStock && (
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            className="relative z-10 mt-3 w-full rounded-lg bg-brand-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700"
+          >
+            {added ? "Adăugat ✓" : "Adaugă în coș"}
+          </button>
+        )}
       </div>
     </div>
   );
