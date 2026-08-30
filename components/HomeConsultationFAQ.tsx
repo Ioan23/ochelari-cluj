@@ -38,8 +38,25 @@ const faqs = [
 export default function HomeConsultationFAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+
   return (
     <section className="mt-16 border-t border-gray-200 pt-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <h2 className="text-2xl font-bold text-gray-900">
         Întrebări Frecvente despre Consultațiile la Domiciliu
       </h2>
