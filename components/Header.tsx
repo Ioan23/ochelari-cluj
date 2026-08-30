@@ -8,6 +8,7 @@ const navLinks = [
   { href: "/rame", label: "Rame" },
   { href: "/lentile", label: "Lentile" },
   { href: "/configurator", label: "Configurator" },
+  { href: "/incarca-reteta", label: "Încarcă Rețeta" },
   { href: "/despre", label: "Despre Noi" },
   { href: "/contact", label: "Contact" },
 ];
