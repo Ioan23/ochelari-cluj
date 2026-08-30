@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { CartProvider } from "@/lib/cart-context";
+import { PrescriptionsProvider } from "@/lib/prescriptions-context";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -104,9 +105,11 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
         />
         <CartProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <PrescriptionsProvider>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </PrescriptionsProvider>
         </CartProvider>
       </body>
     </html>

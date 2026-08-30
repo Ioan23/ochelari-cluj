@@ -2,6 +2,8 @@
 
 import { useRef, useState } from "react";
 import type { ChangeEvent, DragEvent, FormEvent } from "react";
+import Link from "next/link";
+import { usePrescriptions } from "@/lib/prescriptions-context";
 
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
 const ACCEPTED_EXTENSIONS = ".jpg,.jpeg,.png,.webp,.pdf";
@@ -16,11 +18,14 @@ function formatFileSize(bytes: number) {
 }
 
 export default function PrescriptionUpload() {
+  const { savePrescription } = usePrescriptions();
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [saveToAccount, setSaveToAccount] = useState(true);
+  const [wasSavedToAccount, setWasSavedToAccount] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const validateAndSetFile = (candidate: File | undefined | null) => {
@@ -80,6 +85,21 @@ export default function PrescriptionUpload() {
       return;
     }
 
+    if (saveToAccount) {
+      const formData = new FormData(event.currentTarget);
+      savePrescription({
+        customerName: String(formData.get("fullName") ?? ""),
+        email: String(formData.get("email") ?? ""),
+        phone: String(formData.get("phone") ?? ""),
+        notes: String(formData.get("notes") ?? "") || undefined,
+        fileName: file.name,
+        fileType: file.type === "application/pdf" ? "pdf" : "image",
+      });
+      setWasSavedToAccount(true);
+    } else {
+      setWasSavedToAccount(false);
+    }
+
     setSubmitted(true);
   };
 
@@ -108,16 +128,32 @@ export default function PrescriptionUpload() {
           Îți mulțumim! Un consultant optometrist va analiza rețeta și te va
           contacta în cel mai scurt timp pentru a stabili detaliile comenzii.
         </p>
-        <button
-          type="button"
-          onClick={() => {
-            setSubmitted(false);
-            handleRemoveFile();
-          }}
-          className="btn-secondary mt-8"
-        >
-          Încarcă o altă rețetă
-        </button>
+        {wasSavedToAccount && (
+          <p className="mt-4 text-sm font-medium text-brand-700">
+            Rețeta a fost salvată și în contul tău, o poți regăsi oricând la{" "}
+            <Link href="/cont" className="underline hover:text-brand-800">
+              Contul Meu
+            </Link>
+            .
+          </p>
+        )}
+        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <button
+            type="button"
+            onClick={() => {
+              setSubmitted(false);
+              handleRemoveFile();
+            }}
+            className="btn-secondary"
+          >
+            Încarcă o altă rețetă
+          </button>
+          {wasSavedToAccount && (
+            <Link href="/cont" className="btn-primary">
+              Vezi rețetele salvate
+            </Link>
+          )}
+        </div>
       </div>
     );
   }
@@ -273,6 +309,25 @@ export default function PrescriptionUpload() {
             placeholder="Menționează orice detaliu util despre rețetă sau despre rama dorită."
           />
         </div>
+      </div>
+
+      <div className="flex items-start gap-3 rounded-lg bg-gray-50 p-4">
+        <input
+          type="checkbox"
+          id="saveToAccount"
+          checked={saveToAccount}
+          onChange={(event) => setSaveToAccount(event.target.checked)}
+          className="mt-1 h-4 w-4 rounded border-gray-300 text-brand-700 focus:ring-brand-700"
+        />
+        <label htmlFor="saveToAccount" className="text-sm text-gray-700">
+          <span className="font-medium text-gray-900">Salvează această rețetă în contul meu</span>
+          <br />
+          O vei regăsi oricând în{" "}
+          <Link href="/cont" className="font-semibold text-brand-700 hover:text-brand-800">
+            Contul Meu
+          </Link>
+          , pentru a o refolosi la comenzile viitoare.
+        </label>
       </div>
 
       <button type="submit" className="btn-primary w-full sm:w-auto">
