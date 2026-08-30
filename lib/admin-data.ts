@@ -111,6 +111,18 @@ export const invoices: Invoice[] = orders.map((order, index) =>
   )
 );
 
+export function getOrdersByEmail(email: string): Order[] {
+  const query = email.trim().toLowerCase();
+  if (!query) return [];
+  return orders.filter((order) => order.email.toLowerCase() === query);
+}
+
+export function getInvoicesByEmail(email: string): Invoice[] {
+  const query = email.trim().toLowerCase();
+  if (!query) return [];
+  return invoices.filter((invoice) => invoice.customerEmail.toLowerCase() === query);
+}
+
 export type PrescriptionStatus =
   | "noua"
   | "in_verificare"
