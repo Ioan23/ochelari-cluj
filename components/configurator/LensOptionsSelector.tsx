@@ -16,17 +16,17 @@ export default function LensOptionsSelector({
         return (
           <label
             key={option.id}
-            className={`flex cursor-pointer items-start gap-3 rounded-xl border-2 p-4 transition-colors ${
+            className={`flex touch-manipulation cursor-pointer items-start gap-3 rounded-xl border-2 p-4 transition-colors active:scale-[0.98] ${
               isSelected
                 ? "border-brand-700 bg-brand-50"
-                : "border-gray-200 bg-white hover:border-gray-300"
+                : "border-gray-200 bg-white active:border-gray-300 sm:hover:border-gray-300"
             }`}
           >
             <input
               type="checkbox"
               checked={isSelected}
               onChange={() => onToggle(option.id)}
-              className="mt-1 h-4 w-4 flex-shrink-0 rounded border-gray-300 text-brand-700 focus:ring-brand-700"
+              className="mt-1 h-5 w-5 flex-shrink-0 rounded border-gray-300 text-brand-700 focus:ring-brand-700"
             />
             <span className="flex-1">
               <span className="flex items-center justify-between gap-2">

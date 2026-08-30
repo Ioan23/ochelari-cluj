@@ -7,7 +7,7 @@ interface ShapeSelectorProps {
 
 export default function ShapeSelector({ selectedId, onSelect }: ShapeSelectorProps) {
   return (
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
       {frameShapes.map((shape) => {
         const isSelected = shape.id === selectedId;
         return (
@@ -16,10 +16,10 @@ export default function ShapeSelector({ selectedId, onSelect }: ShapeSelectorPro
             type="button"
             onClick={() => onSelect(shape.id)}
             aria-pressed={isSelected}
-            className={`flex flex-col items-center gap-3 rounded-xl border-2 p-4 text-center transition-colors ${
+            className={`flex touch-manipulation flex-col items-center gap-3 rounded-xl border-2 p-4 text-center transition-colors active:scale-[0.97] ${
               isSelected
                 ? "border-brand-700 bg-brand-50"
-                : "border-gray-200 bg-white hover:border-gray-300"
+                : "border-gray-200 bg-white active:border-gray-300 sm:hover:border-gray-300"
             }`}
           >
             <span
