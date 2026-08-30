@@ -17,6 +17,47 @@
   }
 }
 
+@layer base {
+  /* Accessibility: text size, applied on <html> so it scales every
+     rem-based Tailwind utility across the site. */
+  html[data-a11y-font-size="large"] {
+    font-size: 112.5%;
+  }
+
+  html[data-a11y-font-size="x-large"] {
+    font-size: 125%;
+  }
+
+  /* Accessibility: underline every link so they don't rely on color alone. */
+  html[data-a11y-underline-links="true"] a {
+    text-decoration-line: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* Accessibility: reduce motion for users sensitive to animation. */
+  html[data-a11y-reduce-motion="true"] {
+    scroll-behavior: auto;
+  }
+
+  html[data-a11y-reduce-motion="true"] *,
+  html[data-a11y-reduce-motion="true"] *::before,
+  html[data-a11y-reduce-motion="true"] *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  /* Accessibility: high-contrast mode. Applied via `filter` on a wrapper
+     around the page content (not <html>/<body>) so the accessibility
+     widget, which sits outside that wrapper, keeps a stable appearance and
+     stays truly fixed on screen (filter creates a new containing block for
+     fixed-position descendants). */
+  [data-a11y-contrast="high"] {
+    filter: invert(1) hue-rotate(180deg) contrast(1.05);
+    background-color: #fff;
+  }
+}
+
 @layer components {
   .btn-primary {
     @apply inline-flex items-center justify-center rounded-lg bg-brand-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-700;

@@ -3,8 +3,11 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AccessibilityShell from "@/components/AccessibilityShell";
+import AccessibilityWidget from "@/components/AccessibilityWidget";
 import { CartProvider } from "@/lib/cart-context";
 import { PrescriptionsProvider } from "@/lib/prescriptions-context";
+import { AccessibilityProvider } from "@/lib/accessibility-context";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -106,9 +109,14 @@ export default function RootLayout({
         />
         <CartProvider>
           <PrescriptionsProvider>
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
+            <AccessibilityProvider>
+              <AccessibilityShell>
+                <Header />
+                <main className="flex-1">{children}</main>
+                <Footer />
+              </AccessibilityShell>
+              <AccessibilityWidget />
+            </AccessibilityProvider>
           </PrescriptionsProvider>
         </CartProvider>
       </body>
