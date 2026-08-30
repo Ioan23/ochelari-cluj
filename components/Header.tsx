@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useCart } from "@/lib/cart-context";
+import { usePrescriptions } from "@/lib/prescriptions-context";
 
 const navLinks = [
   { href: "/produse", label: "Produse" },
@@ -19,6 +20,7 @@ const navLinks = [
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { totalItems } = useCart();
+  const { totalSaved } = usePrescriptions();
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur-sm">
@@ -42,6 +44,7 @@ export default function Header() {
           </nav>
 
           <div className="hidden items-center gap-6 md:flex">
+            <AccountLink totalSaved={totalSaved} />
             <CartLink totalItems={totalItems} />
             <Link href="/contact" className="btn-primary text-sm">
               Programează Consultație
@@ -49,6 +52,7 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-2 md:hidden">
+            <AccountLink totalSaved={totalSaved} />
             <CartLink totalItems={totalItems} />
             <button
               type="button"
@@ -135,6 +139,35 @@ function CartLink({ totalItems }: { totalItems: number }) {
       {totalItems > 0 && (
         <span className="absolute -right-1 -top-1 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-brand-700 px-1 text-xs font-semibold text-white">
           {totalItems}
+        </span>
+      )}
+    </Link>
+  );
+}
+
+function AccountLink({ totalSaved }: { totalSaved: number }) {
+  return (
+    <Link
+      href="/cont"
+      className="relative rounded-md p-2 text-gray-700 hover:bg-gray-100"
+      aria-label={`Contul meu${totalSaved > 0 ? ` (${totalSaved} rețete salvate)` : ""}`}
+    >
+      <svg
+        className="h-6 w-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+        />
+      </svg>
+      {totalSaved > 0 && (
+        <span className="absolute -right-1 -top-1 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-brand-700 px-1 text-xs font-semibold text-white">
+          {totalSaved}
         </span>
       )}
     </Link>
