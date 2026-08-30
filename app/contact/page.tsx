@@ -127,7 +127,10 @@ export default function ContactPage() {
 
           <CoverageMapSection />
 
-          <section className="mt-16 border-t border-gray-200 pt-12">
+          <section
+            id="programare-domiciliu"
+            className="mt-16 scroll-mt-24 border-t border-gray-200 pt-12"
+          >
             <h2 className="text-2xl font-bold text-gray-900">
               Programează o Consultație la Domiciliu
             </h2>

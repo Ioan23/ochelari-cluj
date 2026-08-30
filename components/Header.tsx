@@ -88,6 +88,50 @@ export default function Header() {
 
         {mobileOpen && (
           <div className="border-t border-gray-100 pb-4 pt-2 md:hidden">
+            <div className="flex gap-2 px-3 pb-3 pt-1">
+              <a
+                href="tel:+40264123456"
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-brand-700 px-3 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-800"
+                onClick={() => setMobileOpen(false)}
+              >
+                <svg
+                  className="h-5 w-5 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 5a2 2 0 012-2h3l2 5-2.5 1.5a11 11 0 005 5L14 14l5 2v3a2 2 0 01-2 2h-1C9.163 21 3 14.837 3 7V5z"
+                  />
+                </svg>
+                Sună acum
+              </a>
+              <Link
+                href="/contact#programare-domiciliu"
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-brand-700 px-3 py-2.5 text-sm font-semibold text-brand-700 transition-colors hover:bg-brand-50"
+                onClick={() => setMobileOpen(false)}
+              >
+                <svg
+                  className="h-5 w-5 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                Programează-te
+              </Link>
+            </div>
             <nav className="flex flex-col gap-1">
               {navLinks.map((link) => (
                 <Link
@@ -99,15 +143,6 @@ export default function Header() {
                   {link.label}
                 </Link>
               ))}
-              <div className="mt-2 px-3">
-                <Link
-                  href="/contact"
-                  className="btn-primary block text-center text-sm"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Programează Consultație
-                </Link>
-              </div>
             </nav>
           </div>
         )}
