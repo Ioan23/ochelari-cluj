@@ -6,25 +6,36 @@ import {
   type AppointmentStatus,
   appointmentStatusLabels,
   appointmentStatusStyles,
-  appointmentTypeLabels,
   appointments as initialAppointments,
-} from "@/lib/appointments-data";
+} from "@/lib/admin-data";
 
 const statusFilters: Array<AppointmentStatus | "toate"> = [
   "toate",
   "in_asteptare",
   "confirmata",
-  "finalizata",
   "anulata",
 ];
 
-export default function AppointmentsTable() {
-  const [appointments, setAppointments] =
-    useState<Appointment[]>(initialAppointments);
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<AppointmentStatus | "toate">(
-    "toate"
+function NotificationBadge({ sent, label }: { sent: boolean; label: string }) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
+        sent ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-500"
+      }`}
+    >
+      {sent ? "✓" : "✗"} {label}
+    </span>
   );
+}
+
+export default function AppointmentsTable() {
+  const [appointments, setAppointments] = useState<Appointment[]>(
+    initialAppointments
+  );
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<
+    AppointmentStatus | "toate"
+  >("toate");
 
   const filteredAppointments = useMemo(() => {
     return appointments.filter((appointment) => {
@@ -45,9 +56,7 @@ export default function AppointmentsTable() {
   ) {
     setAppointments((prev) =>
       prev.map((appointment) =>
-        appointment.id === appointmentId
-          ? { ...appointment, status }
-          : appointment
+        appointment.id === appointmentId ? { ...appointment, status } : appointment
       )
     );
   }
@@ -90,13 +99,13 @@ export default function AppointmentsTable() {
                 Client
               </th>
               <th className="px-4 py-3 text-left font-semibold text-gray-700">
-                Tip
+                Adresă
               </th>
               <th className="px-4 py-3 text-left font-semibold text-gray-700">
-                Data și ora
+                Data / Ora
               </th>
               <th className="px-4 py-3 text-left font-semibold text-gray-700">
-                Observații
+                Notificări
               </th>
               <th className="px-4 py-3 text-left font-semibold text-gray-700">
                 Status
@@ -110,21 +119,21 @@ export default function AppointmentsTable() {
                   {appointment.id}
                 </td>
                 <td className="px-4 py-3">
-                  <div className="text-gray-900">
-                    {appointment.customerName}
-                  </div>
-                  <div className="text-xs text-gray-500">
-                    {appointment.email}
-                  </div>
+                  <div className="text-gray-900">{appointment.customerName}</div>
+                  <div className="text-xs text-gray-500">{appointment.email}</div>
+                  <div className="text-xs text-gray-500">{appointment.phone}</div>
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-gray-700">
-                  {appointmentTypeLabels[appointment.type]}
+                <td className="max-w-xs px-4 py-3 text-gray-700">
+                  {appointment.address}
                 </td>
                 <td className="whitespace-nowrap px-4 py-3 text-gray-500">
                   {appointment.date} · {appointment.time}
                 </td>
-                <td className="max-w-xs px-4 py-3 text-gray-500">
-                  {appointment.notes || "—"}
+                <td className="px-4 py-3">
+                  <div className="flex flex-col gap-1">
+                    <NotificationBadge sent={appointment.emailSent} label="Email" />
+                    <NotificationBadge sent={appointment.smsSent} label="SMS" />
+                  </div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-3">
                   <select

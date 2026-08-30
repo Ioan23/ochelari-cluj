@@ -3,9 +3,12 @@ import ProductCard from "@/components/ProductCard";
 import { products } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "Produse",
+  title: "Rame, Lentile și Ochelari de Soare în Cluj-Napoca",
   description:
-    "Explorați colecția noastră completă de rame, lentile și ochelari de soare.",
+    "Explorați colecția noastră completă de rame, lentile și ochelari de soare, disponibilă în magazinul nostru de optică din Cluj-Napoca.",
+  alternates: {
+    canonical: "/produse",
+  },
 };
 
 const categories = ["Toate", "Rame optice", "Ochelari de soare", "Lentile de contact"];

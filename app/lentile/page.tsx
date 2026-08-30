@@ -4,9 +4,12 @@ import ProductCard from "@/components/ProductCard";
 import { products } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "Lentile",
+  title: "Lentile de Contact și Lentile Optice în Cluj-Napoca",
   description:
-    "Lentile de contact zilnice și lunare, plus servicii complete de lentile optice: monofocale, progresive și anti-reflex.",
+    "Lentile de contact zilnice și lunare, plus servicii complete de lentile optice: monofocale, progresive și anti-reflex, la optica noastră din Cluj-Napoca.",
+  alternates: {
+    canonical: "/lentile",
+  },
 };
 
 const highlights = [

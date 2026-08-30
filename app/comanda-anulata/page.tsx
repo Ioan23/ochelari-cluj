@@ -4,6 +4,10 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Comandă Anulată",
   description: "Plata a fost anulată.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function ComandaAnulataPage() {

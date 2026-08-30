@@ -26,7 +26,7 @@ const faqs = [
   {
     question: "Cum programez o consultație la domiciliu?",
     answer:
-      "Ne puteți contacta telefonic la +40 264 123 456 sau prin formularul de contact, menționând că doriți o consultație la domiciliu. Vă vom propune o dată și un interval orar convenabile.",
+      "Completați formularul de programare de mai sus sau sunați-ne la +40 264 123 456. Veți primi imediat o confirmare prin SMS și email cu data și intervalul orar stabilite.",
   },
   {
     question: "Cât durează o vizită la domiciliu?",
@@ -38,8 +38,25 @@ const faqs = [
 export default function HomeConsultationFAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+
   return (
     <section className="mt-16 border-t border-gray-200 pt-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <h2 className="text-2xl font-bold text-gray-900">
         Întrebări Frecvente despre Consultațiile la Domiciliu
       </h2>

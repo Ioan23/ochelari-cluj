@@ -5,6 +5,10 @@ import { stripe } from "@/lib/stripe";
 export const metadata: Metadata = {
   title: "Comandă Confirmată",
   description: "Confirmarea plății și a comenzii dumneavoastră.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 interface ComandaConfirmataPageProps {
