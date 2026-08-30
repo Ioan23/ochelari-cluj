@@ -1,5 +1,6 @@
 import Link from "next/link";
 import GlassesPreview from "./GlassesPreview";
+import BuyButton from "@/components/BuyButton";
 import type { FrameColor, FrameShape, LensOption, LensType } from "@/lib/configurator-data";
 import { frameBasePrice } from "@/lib/configurator-data";
 
@@ -55,11 +56,22 @@ export default function Summary({ shape, color, lens, options }: SummaryProps) {
         </span>
       </div>
 
-      <Link href="/contact" className="btn-primary mt-6 w-full">
+      <BuyButton
+        payload={{
+          type: "custom",
+          name: `Ochelari personalizați – ${shape.name}, ${color.name}, ${lens.name}`,
+          amount: total,
+        }}
+        className="btn-primary mt-6 w-full disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        Comandă și Plătește Online
+      </BuyButton>
+      <Link href="/contact" className="btn-secondary mt-3 w-full">
         Solicită Ofertă Personalizată
       </Link>
       <p className="mt-3 text-center text-xs text-gray-500">
-        Un consultant vă va confirma configurația și disponibilitatea.
+        Plata se procesează securizat prin Stripe. Un consultant vă va contacta pentru
+        confirmarea configurației.
       </p>
     </div>
   );

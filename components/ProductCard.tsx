@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Product } from "@/lib/data";
+import BuyButton from "@/components/BuyButton";
 
 interface ProductCardProps {
   product: Product;
@@ -40,6 +41,14 @@ export default function ProductCard({ product }: ProductCardProps) {
             </span>
           )}
         </div>
+        {product.inStock && (
+          <BuyButton
+            payload={{ type: "product", productId: product.id }}
+            className="relative z-10 mt-3 inline-flex w-full items-center justify-center rounded-lg bg-brand-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-800 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Cumpără acum
+          </BuyButton>
+        )}
       </div>
     </div>
   );
