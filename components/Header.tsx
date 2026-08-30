@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import CartLink from "@/components/CartLink";
 
 const navLinks = [
   { href: "/produse", label: "Produse" },
@@ -37,18 +38,21 @@ export default function Header() {
             ))}
           </nav>
 
-          <div className="hidden items-center gap-4 md:flex">
+          <div className="hidden items-center gap-6 md:flex">
+            <CartLink />
             <Link href="/contact" className="btn-primary text-sm">
               Programează Consultație
             </Link>
           </div>
 
-          <button
-            type="button"
-            className="rounded-md p-2 text-gray-700 hover:bg-gray-100 md:hidden"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
-          >
+          <div className="flex items-center gap-2 md:hidden">
+            <CartLink />
+            <button
+              type="button"
+              className="rounded-md p-2 text-gray-700 hover:bg-gray-100"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label="Toggle menu"
+            >
             <svg
               className="h-6 w-6"
               fill="none"
@@ -71,7 +75,8 @@ export default function Header() {
                 />
               )}
             </svg>
-          </button>
+            </button>
+          </div>
         </div>
 
         {mobileOpen && (

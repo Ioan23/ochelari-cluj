@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Product } from "@/lib/data";
+import AddToCartButton from "@/components/AddToCartButton";
 
 interface ProductCardProps {
   product: Product;
@@ -39,6 +40,13 @@ export default function ProductCard({ product }: ProductCardProps) {
               Indisponibil
             </span>
           )}
+        </div>
+        <div className="mt-3">
+          <AddToCartButton
+            productId={product.id}
+            inStock={product.inStock}
+            className="w-full"
+          />
         </div>
       </div>
     </div>
