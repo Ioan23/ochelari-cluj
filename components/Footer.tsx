@@ -11,6 +11,7 @@ const footerLinks = {
     { href: "/despre", label: "Despre Noi" },
     { href: "/blog", label: "Blog" },
     { href: "/contact", label: "Contact" },
+    { href: "/garantie-retur", label: "Garanție și Retur" },
   ],
 };
 
