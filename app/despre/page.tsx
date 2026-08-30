@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Despre Noi",
+  title: "Despre Noi | Optică în Cluj-Napoca din 2010",
   description:
-    "Aflați mai multe despre echipa Ochelari Cluj și misiunea noastră de a oferi cele mai bune servicii optice.",
+    "Aflați mai multe despre echipa Ochelari Cluj, magazinul nostru de optică din Cluj-Napoca, și misiunea noastră de a oferi cele mai bune servicii optice locuitorilor Clujului.",
+  alternates: {
+    canonical: "/despre",
+  },
 };
 
 export default function DesprePage() {

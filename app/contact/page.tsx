@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import HomeConsultationFAQ from "@/components/HomeConsultationFAQ";
 
 export const metadata: Metadata = {
-  title: "Contact",
+  title: "Contact | Consultații Optice în Cluj-Napoca",
   description:
-    "Contactați-ne pentru programări, informații despre produse sau orice altă întrebare.",
+    "Contactați optica noastră din Cluj-Napoca, Strada Eroilor 42, pentru programări, consultații optice gratuite (în magazin sau la domiciliu) sau orice altă întrebare.",
+  alternates: {
+    canonical: "/contact",
+  },
 };
 
 export default function ContactPage() {

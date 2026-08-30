@@ -4,9 +4,12 @@ import ReviewForm from "@/components/ReviewForm";
 import { reviews } from "@/lib/reviews-data";
 
 export const metadata: Metadata = {
-  title: "Recenzii Clienți",
+  title: "Recenzii Clienți din Cluj-Napoca",
   description:
-    "Descoperă recenziile și testimonialele foto ale clienților Ochelari Cluj și lasă propria recenzie.",
+    "Descoperă recenziile și testimonialele foto ale clienților optici din Cluj-Napoca și lasă propria recenzie despre Ochelari Cluj.",
+  alternates: {
+    canonical: "/recenzii",
+  },
 };
 
 const approvedReviews = reviews
