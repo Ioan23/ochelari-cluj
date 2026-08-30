@@ -9,6 +9,7 @@ const footerLinks = {
   ],
   companie: [
     { href: "/despre", label: "Despre Noi" },
+    { href: "/blog", label: "Blog" },
     { href: "/contact", label: "Contact" },
   ],
 };
