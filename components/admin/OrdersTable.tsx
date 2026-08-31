@@ -44,6 +44,14 @@ export default function OrdersTable() {
         order.id === orderId ? { ...order, status } : order
       )
     );
+
+    fetch(`/api/admin/orders/${encodeURIComponent(orderId)}/status`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    }).catch(() => {
+      // Actualizarea locală rămâne vizibilă chiar dacă notificarea push eșuează.
+    });
   }
 
   return (

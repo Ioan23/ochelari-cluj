@@ -7,6 +7,7 @@ import {
   orderStatusLabels,
   orders,
 } from "@/lib/admin-data";
+import OrderPushNotifications from "@/components/OrderPushNotifications";
 
 const trackedStatuses: OrderStatus[] = [
   "in_asteptare",
@@ -175,6 +176,10 @@ function OrderResultCard({ order }: { order: Order }) {
             })}
           </ol>
         )}
+      </div>
+
+      <div className="mt-6">
+        <OrderPushNotifications orderId={order.id} />
       </div>
     </div>
   );
