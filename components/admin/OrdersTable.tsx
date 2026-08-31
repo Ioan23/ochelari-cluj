@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import ExportButtons from "@/components/admin/ExportButtons";
 import {
   type Order,
   type OrderStatus,
@@ -8,6 +9,18 @@ import {
   orderStatusStyles,
   orders as initialOrders,
 } from "@/lib/admin-data";
+import type { ExportColumn } from "@/lib/export";
+
+const orderExportColumns: Array<ExportColumn<Order>> = [
+  { header: "Comandă", accessor: (order) => order.id },
+  { header: "Client", accessor: (order) => order.customerName },
+  { header: "Email", accessor: (order) => order.email },
+  { header: "Telefon", accessor: (order) => order.phone },
+  { header: "Produse", accessor: (order) => order.items.join(", ") },
+  { header: "Total (lei)", accessor: (order) => order.total },
+  { header: "Data", accessor: (order) => order.date },
+  { header: "Status", accessor: (order) => orderStatusLabels[order.status] },
+];
 
 const statusFilters: Array<OrderStatus | "toate"> = [
   "toate",
@@ -57,26 +70,33 @@ export default function OrdersTable() {
   return (
     <div>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <input
-          type="search"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder="Caută după nume sau nr. comandă..."
-          className="w-full max-w-sm rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 shadow-sm focus:border-brand-700 focus:outline-none focus:ring-1 focus:ring-brand-700"
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <input
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Caută după nume sau nr. comandă..."
+            className="w-full max-w-sm rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 shadow-sm focus:border-brand-700 focus:outline-none focus:ring-1 focus:ring-brand-700"
+          />
+          <select
+            value={statusFilter}
+            onChange={(event) =>
+              setStatusFilter(event.target.value as OrderStatus | "toate")
+            }
+            className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-brand-700 focus:outline-none focus:ring-1 focus:ring-brand-700"
+          >
+            {statusFilters.map((status) => (
+              <option key={status} value={status}>
+                {status === "toate" ? "Toate statusurile" : orderStatusLabels[status]}
+              </option>
+            ))}
+          </select>
+        </div>
+        <ExportButtons
+          rows={filteredOrders}
+          columns={orderExportColumns}
+          filenamePrefix="comenzi"
         />
-        <select
-          value={statusFilter}
-          onChange={(event) =>
-            setStatusFilter(event.target.value as OrderStatus | "toate")
-          }
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-brand-700 focus:outline-none focus:ring-1 focus:ring-brand-700"
-        >
-          {statusFilters.map((status) => (
-            <option key={status} value={status}>
-              {status === "toate" ? "Toate statusurile" : orderStatusLabels[status]}
-            </option>
-          ))}
-        </select>
       </div>
 
       <div className="mt-6 overflow-x-auto rounded-lg border border-gray-200">
