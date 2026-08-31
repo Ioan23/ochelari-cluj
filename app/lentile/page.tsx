@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import LensPriceCalculator from "@/components/LensPriceCalculator";
 import ProductCard from "@/components/ProductCard";
 import { products } from "@/lib/data";
 
@@ -83,6 +84,10 @@ export default function LentilePage() {
             <li>• Lentile progresive pentru corecția la orice distanță</li>
             <li>• Tratamente anti-reflex, anti-zgârieturi și de protecție UV</li>
           </ul>
+        </div>
+
+        <div className="mt-16">
+          <LensPriceCalculator />
         </div>
 
         <div className="mt-16 rounded-2xl bg-brand-700 px-8 py-10 text-center">
