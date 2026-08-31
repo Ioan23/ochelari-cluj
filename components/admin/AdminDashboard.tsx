@@ -2,15 +2,23 @@
 
 import { useState } from "react";
 import AppointmentsTable from "@/components/admin/AppointmentsTable";
+import ClientsTable from "@/components/admin/ClientsTable";
 import InvoicesTable from "@/components/admin/InvoicesTable";
 import OrdersTable from "@/components/admin/OrdersTable";
 import PrescriptionsTable from "@/components/admin/PrescriptionsTable";
 import ReviewsTable from "@/components/admin/ReviewsTable";
 import { appointments, invoices, orders, prescriptions } from "@/lib/admin-data";
+import { clients } from "@/lib/clients-data";
 import { formatCurrency } from "@/lib/invoicing";
 import { reviews } from "@/lib/reviews-data";
 
-type Tab = "comenzi" | "retete" | "recenzii" | "programari" | "facturi";
+type Tab =
+  | "comenzi"
+  | "retete"
+  | "recenzii"
+  | "programari"
+  | "facturi"
+  | "clienti";
 
 const pendingOrders = orders.filter(
   (order) => order.status === "in_asteptare" || order.status === "in_procesare"
@@ -33,6 +41,8 @@ const invoicedTotal = invoices
   .filter((invoice) => invoice.status === "emisa")
   .reduce((sum, invoice) => sum + invoice.total, 0);
 
+const vipClients = clients.filter((client) => client.status === "vip").length;
+
 const stats = [
   { label: "Comenzi totale", value: orders.length },
   { label: "Comenzi în lucru", value: pendingOrders },
@@ -44,6 +54,17 @@ const stats = [
   { label: "Programări în așteptare", value: pendingAppointments },
   { label: "Facturi emise", value: invoices.length },
   { label: "Valoare facturată", value: formatCurrency(invoicedTotal) },
+  { label: "Clienți totali", value: clients.length },
+  { label: "Clienți VIP", value: vipClients },
+];
+
+const tabs: Array<{ id: Tab; label: string }> = [
+  { id: "comenzi", label: "Comenzi" },
+  { id: "retete", label: "Rețete" },
+  { id: "recenzii", label: "Recenzii" },
+  { id: "programari", label: "Programări" },
+  { id: "facturi", label: "Facturi" },
+  { id: "clienti", label: "Clienți" },
 ];
 
 export default function AdminDashboard() {
@@ -51,7 +72,7 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-6">
         {stats.map((stat) => (
           <div
             key={stat.label}
@@ -65,61 +86,20 @@ export default function AdminDashboard() {
 
       <div className="mt-10 border-b border-gray-200">
         <nav className="flex gap-6">
-          <button
-            type="button"
-            onClick={() => setActiveTab("comenzi")}
-            className={`border-b-2 px-1 pb-3 text-sm font-medium transition-colors ${
-              activeTab === "comenzi"
-                ? "border-brand-700 text-brand-700"
-                : "border-transparent text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Comenzi
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("retete")}
-            className={`border-b-2 px-1 pb-3 text-sm font-medium transition-colors ${
-              activeTab === "retete"
-                ? "border-brand-700 text-brand-700"
-                : "border-transparent text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Rețete
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("recenzii")}
-            className={`border-b-2 px-1 pb-3 text-sm font-medium transition-colors ${
-              activeTab === "recenzii"
-                ? "border-brand-700 text-brand-700"
-                : "border-transparent text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Recenzii
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("programari")}
-            className={`border-b-2 px-1 pb-3 text-sm font-medium transition-colors ${
-              activeTab === "programari"
-                ? "border-brand-700 text-brand-700"
-                : "border-transparent text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Programări
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("facturi")}
-            className={`border-b-2 px-1 pb-3 text-sm font-medium transition-colors ${
-              activeTab === "facturi"
-                ? "border-brand-700 text-brand-700"
-                : "border-transparent text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Facturi
-          </button>
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setActiveTab(tab.id)}
+              className={`border-b-2 px-1 pb-3 text-sm font-medium transition-colors ${
+                activeTab === tab.id
+                  ? "border-brand-700 text-brand-700"
+                  : "border-transparent text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </nav>
       </div>
 
@@ -129,6 +109,7 @@ export default function AdminDashboard() {
         {activeTab === "recenzii" && <ReviewsTable />}
         {activeTab === "programari" && <AppointmentsTable />}
         {activeTab === "facturi" && <InvoicesTable />}
+        {activeTab === "clienti" && <ClientsTable />}
       </div>
     </div>
   );

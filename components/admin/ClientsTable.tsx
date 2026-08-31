@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import ExportButtons from "@/components/admin/ExportButtons";
 import {
   type Client,
   type ClientStatus,
@@ -8,6 +9,22 @@ import {
   clientStatusStyles,
   clients as initialClients,
 } from "@/lib/clients-data";
+import type { ExportColumn } from "@/lib/export";
+
+const clientExportColumns: Array<ExportColumn<Client>> = [
+  { header: "Nr. client", accessor: (client) => client.id },
+  { header: "Nume", accessor: (client) => client.name },
+  { header: "Email", accessor: (client) => client.email },
+  { header: "Telefon", accessor: (client) => client.phone },
+  { header: "Membru din", accessor: (client) => client.joinDate },
+  { header: "Ultima vizită", accessor: (client) => client.lastVisit },
+  { header: "Comenzi", accessor: (client) => client.totalOrders },
+  { header: "Total cheltuit (lei)", accessor: (client) => client.totalSpent },
+  {
+    header: "Categorie",
+    accessor: (client) => clientStatusLabels[client.status],
+  },
+];
 
 const statusFilters: Array<ClientStatus | "toate"> = [
   "toate",
@@ -48,26 +65,33 @@ export default function ClientsTable() {
   return (
     <div>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <input
-          type="search"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder="Caută după nume, email sau nr. client..."
-          className="w-full max-w-sm rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 shadow-sm focus:border-brand-700 focus:outline-none focus:ring-1 focus:ring-brand-700"
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <input
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Caută după nume, email sau nr. client..."
+            className="w-full max-w-sm rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 shadow-sm focus:border-brand-700 focus:outline-none focus:ring-1 focus:ring-brand-700"
+          />
+          <select
+            value={statusFilter}
+            onChange={(event) =>
+              setStatusFilter(event.target.value as ClientStatus | "toate")
+            }
+            className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-brand-700 focus:outline-none focus:ring-1 focus:ring-brand-700"
+          >
+            {statusFilters.map((status) => (
+              <option key={status} value={status}>
+                {status === "toate" ? "Toate categoriile" : clientStatusLabels[status]}
+              </option>
+            ))}
+          </select>
+        </div>
+        <ExportButtons
+          rows={filteredClients}
+          columns={clientExportColumns}
+          filenamePrefix="clienti"
         />
-        <select
-          value={statusFilter}
-          onChange={(event) =>
-            setStatusFilter(event.target.value as ClientStatus | "toate")
-          }
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-brand-700 focus:outline-none focus:ring-1 focus:ring-brand-700"
-        >
-          {statusFilters.map((status) => (
-            <option key={status} value={status}>
-              {status === "toate" ? "Toate categoriile" : clientStatusLabels[status]}
-            </option>
-          ))}
-        </select>
       </div>
 
       <div className="mt-6 overflow-x-auto rounded-lg border border-gray-200">
